@@ -3,95 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Results - Badminton Cost Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Badminton Cost Calculator - Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        table { width: 80%; margin: 20px auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; }
+        button { padding: 10px; margin: 10px; cursor: pointer; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h2>🏸 Badminton Cost Calculator</h2>
 
-        <label for="courtCost">Court Rental Cost:</label>
-        <input type="number" id="courtCost" min="0" value="0">
+    <h2>Player Submissions</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Hours Played</th>
+            </tr>
+        </thead>
+        <tbody id="playerData">
+            <!-- Player data will be inserted here -->
+        </tbody>
+    </table>
 
-        <label for="shuttleCost">Shuttlecock Cost:</label>
-        <input type="number" id="shuttleCost" min="0" value="0">
-
-        <label for="additionalCost">Additional Costs:</label>
-        <input type="number" id="additionalCost" min="0" value="0">
-
-        <h3>Player List</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Play Hours</th>
-                </tr>
-            </thead>
-            <tbody id="playerTable"></tbody>
-        </table>
-
-        <button onclick="calculateCost()">Calculate Cost</button>
-
-        <h3>Results</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Play Hours</th>
-                    <th>Cost</th>
-                </tr>
-            </thead>
-            <tbody id="resultTable"></tbody>
-        </table>
-    </div>
+    <button onclick="clearData()">🗑️ Clear Data</button>
 
     <script>
-        function loadPlayers() {
+        // Function to load player data from localStorage
+        function loadData() {
             let players = JSON.parse(localStorage.getItem("players")) || [];
-            let tableBody = document.getElementById("playerTable");
-            tableBody.innerHTML = "";
+            let tableBody = document.getElementById("playerData");
+            tableBody.innerHTML = ""; // Clear table first
 
             players.forEach(player => {
-                tableBody.innerHTML += `
-                    <tr>
-                        <td>${player.name}</td>
-                        <td>${player.playHours} hours</td>
-                    </tr>
-                `;
+                let row = `<tr>
+                    <td>${player.name}</td>
+                    <td>${player.hours}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
             });
         }
 
-        function calculateCost() {
-            let courtCost = parseFloat(document.getElementById("courtCost").value);
-            let shuttleCost = parseFloat(document.getElementById("shuttleCost").value);
-            let additionalCost = parseFloat(document.getElementById("additionalCost").value);
-
-            let players = JSON.parse(localStorage.getItem("players")) || [];
-            if (players.length === 0) {
-                alert("No players added!");
-                return;
+        // Function to clear all data
+        function clearData() {
+            let confirmClear = confirm("Are you sure you want to delete all player data?");
+            if (confirmClear) {
+                localStorage.removeItem("players"); // Delete stored data
+                loadData(); // Refresh table
+                alert("All data has been cleared.");
             }
-
-            let totalPlayHours = players.reduce((sum, player) => sum + player.playHours, 0);
-            let totalCost = courtCost + shuttleCost + additionalCost;
-
-            let resultTable = document.getElementById("resultTable");
-            resultTable.innerHTML = "";
-
-            players.forEach(player => {
-                let playerCost = ((player.playHours / totalPlayHours) * totalCost).toFixed(2);
-                resultTable.innerHTML += `
-                    <tr>
-                        <td>${player.name}</td>
-                        <td>${player.playHours} hours</td>
-                        <td>${playerCost}</td>
-                    </tr>
-                `;
-            });
         }
 
-        // Load players when the page is opened
-        window.onload = loadPlayers;
+        // Load data when page opens
+        loadData();
     </script>
+
 </body>
 </html>
