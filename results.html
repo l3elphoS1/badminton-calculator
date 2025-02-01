@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - Badminton Cost Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>🏸 Badminton Cost Calculator</h2>
+
+        <label for="courtCost">Court Rental Cost:</label>
+        <input type="number" id="courtCost" min="0" value="0">
+
+        <label for="shuttleCost">Shuttlecock Cost:</label>
+        <input type="number" id="shuttleCost" min="0" value="0">
+
+        <label for="additionalCost">Additional Costs:</label>
+        <input type="number" id="additionalCost" min="0" value="0">
+
+        <h3>Player List</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Play Hours</th>
+                </tr>
+            </thead>
+            <tbody id="playerTable"></tbody>
+        </table>
+
+        <button onclick="calculateCost()">Calculate Cost</button>
+
+        <h3>Results</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Play Hours</th>
+                    <th>Cost</th>
+                </tr>
+            </thead>
+            <tbody id="resultTable"></tbody>
+        </table>
+    </div>
+
+    <script>
+        function loadPlayers() {
+            let players = JSON.parse(localStorage.getItem("players")) || [];
+            let tableBody = document.getElementById("playerTable");
+            tableBody.innerHTML = "";
+
+            players.forEach(player => {
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${player.name}</td>
+                        <td>${player.playHours} hours</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function calculateCost() {
+            let courtCost = parseFloat(document.getElementById("courtCost").value);
+            let shuttleCost = parseFloat(document.getElementById("shuttleCost").value);
+            let additionalCost = parseFloat(document.getElementById("additionalCost").value);
+
+            let players = JSON.parse(localStorage.getItem("players")) || [];
+            if (players.length === 0) {
+                alert("No players added!");
+                return;
+            }
+
+            let totalPlayHours = players.reduce((sum, player) => sum + player.playHours, 0);
+            let totalCost = courtCost + shuttleCost + additionalCost;
+
+            let resultTable = document.getElementById("resultTable");
+            resultTable.innerHTML = "";
+
+            players.forEach(player => {
+                let playerCost = ((player.playHours / totalPlayHours) * totalCost).toFixed(2);
+                resultTable.innerHTML += `
+                    <tr>
+                        <td>${player.name}</td>
+                        <td>${player.playHours} hours</td>
+                        <td>${playerCost}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Load players when the page is opened
+        window.onload = loadPlayers;
+    </script>
+</body>
+</html>
