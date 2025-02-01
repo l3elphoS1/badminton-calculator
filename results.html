@@ -185,6 +185,10 @@
             <tbody id="resultTable"></tbody>
         </table>
 
+        <div class="navigation">
+            <a href="index.html" class="nav-link">← Return to Submit Page</a>
+        </div>
+        
         <button onclick="clearData()" class="clear-btn">🗑️ เคลียร์ข้อมูล</button>
     </div>
 
@@ -214,9 +218,9 @@
         }
 
         function calculateCost() {
-            let courtCost = parseFloat(document.getElementById("courtCost").value) || 0;
-            let shuttleCost = parseFloat(document.getElementById("shuttleCost").value) || 0;
-            let additionalCost = parseFloat(document.getElementById("additionalCost").value) || 0;
+            let courtCost = parseFloat(document.getElementById("ค่าคอร์ทแบด").value) || 0;
+            let shuttleCost = parseFloat(document.getElementById("ค่าลูก").value) || 0;
+            let additionalCost = parseFloat(document.getElementById("ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)").value) || 0;
 
             let players = JSON.parse(localStorage.getItem("players")) || [];
             if (players.length === 0) {
@@ -235,7 +239,7 @@
                 resultTable.innerHTML += `
                     <tr>
                         <td>${player.name}</td>
-                        <td>${player.playHours} hours</td>
+                        <td>${player.playHours} ชั่วโมง</td>
                         <td>${playerCost}</td>
                     </tr>
                 `;
