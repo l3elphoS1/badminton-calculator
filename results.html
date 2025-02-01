@@ -225,13 +225,13 @@
             let tableBody = document.getElementById("playerTable");
             tableBody.innerHTML = "";
 
-            players.forEach(player, index => {
-                tableBody.innerHTML += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${player.name}</td>
-                        <td>${player.playHours} ชม.</td>
-                    </tr>
+            players.forEach((player, index) => {
+            tableBody.innerHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${player.name}</td>
+                <td>${player.playHours} ชม.</td>
+            </tr>
                 `;
             });
         }
@@ -253,7 +253,7 @@
             let resultTable = document.getElementById("resultTable");
             resultTable.innerHTML = "";
 
-            players.forEach(player,index => {
+            players.forEach((player,index) => {
                 let playerCost = ((player.playHours / totalPlayHours) * totalCost).toFixed(2);
                 resultTable.innerHTML += `
                     <tr>
