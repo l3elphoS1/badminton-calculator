@@ -3,23 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Playtime</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Submit Playtime - Badminton Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            margin-bottom: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin: 1rem 0;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            color: #666;
+            margin: 1rem 0;
+            line-height: 1.5;
+        }
+
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #45a049;
+            text-decoration: underline;
+        }
+
+        .success-message {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .link-message {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: #f5f5f5;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+            }
+
+            input {
+                padding: 0.5rem;
+            }
+
+            button {
+                padding: 0.5rem 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h2>🏸 Submit Your Playtime</h2>
 
-        <label for="playerName">Your Name:</label>
-        <input type="text" id="playerName" placeholder="Enter your name">
+        <div class="input-group">
+            <label for="playerName">Your Name:</label>
+            <input type="text" id="playerName" placeholder="Enter your name" autocomplete="name">
+        </div>
 
-        <label for="playHours">Play Hours:</label>
-        <input type="number" id="playHours" min="0.5" step="0.5" value="1">
+        <div class="input-group">
+            <label for="playHours">Play Hours:</label>
+            <input type="number" id="playHours" min="0.5" step="0.5" value="1">
+        </div>
 
-        <button onclick="submitPlayer()">Submit</button>
+        <button onclick="submitPlayer()">Submit Playtime</button>
 
-        <p>✅ Your data will automatically be sent to the results page.</p>
-        <p>🔗 <a href="results.html">View Results</a></p>
+        <div class="success-message">
+            ✅ Your data will automatically be sent to the results page.
+        </div>
+
+        <div class="link-message">
+            🔗 <a href="results.html">View Results Page</a>
+        </div>
     </div>
 
     <script>
@@ -27,16 +168,32 @@
             let name = document.getElementById("playerName").value.trim();
             let playHours = parseFloat(document.getElementById("playHours").value);
 
-            if (name === "" || isNaN(playHours) || playHours <= 0) {
-                alert("Please enter a valid name and play hours.");
+            if (name === "") {
+                alert("Please enter your name.");
+                document.getElementById("playerName").focus();
+                return;
+            }
+
+            if (isNaN(playHours) || playHours < 0.5) {
+                alert("Please enter valid play hours (minimum 0.5 hours).");
+                document.getElementById("playHours").focus();
                 return;
             }
 
             // Retrieve existing players from localStorage
             let players = JSON.parse(localStorage.getItem("players")) || [];
 
-            // Add new player
-            players.push({ name, playHours });
+            // Check for duplicate names
+            const existingPlayer = players.find(player => player.name.toLowerCase() === name.toLowerCase());
+            if (existingPlayer) {
+                if (!confirm("A player with this name already exists. Do you want to update their hours?")) {
+                    return;
+                }
+                existingPlayer.playHours = playHours;
+            } else {
+                // Add new player
+                players.push({ name, playHours });
+            }
 
             // Save back to localStorage
             localStorage.setItem("players", JSON.stringify(players));
