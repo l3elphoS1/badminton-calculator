@@ -143,9 +143,9 @@
             }
         }
 
-        #resultTable td:last-child::before {
+        /* #resultTable td:last-child::before {
             content: 'B';
-        }
+        } */
     </style>
 </head>
 <body>
@@ -164,12 +164,12 @@
             <input type="number" id="ค่าลูก" min="0" value="">
         </div>
 
-        <div class="input-group">
+        <!-- <div class="input-group">
             <label for="ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)">ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง):</label>
             <input type="number" id="ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)" min="0" value="">
-        </div>
+        </div> -->
 
-        <h3>รายชื่อคนเล่น</h3>
+        <!-- <h3>รายชื่อคนเล่น</h3>
         <table>
             <thead>
                 <tr>
@@ -179,7 +179,7 @@
                 </tr>
             </thead>
             <tbody id="playerTable"></tbody>
-        </table>
+        </table> -->
 
         <button onclick="calculateCost()">คำนวณค่าใช้จ่าย</button>
 
@@ -189,7 +189,7 @@
                 <tr>
                     <th>ลำดับ</th>
                     <th>ชื่อ</th>
-                    <th>ชื่อโมงทีเล่น</th>
+                    <th>ชม.ทีเล่น</th>
                     <th>ค่าใช้จ่าย</th>
                 </tr>
             </thead>
@@ -197,7 +197,7 @@
         </table>
 
         <div class="navigation">
-            <a href="index.html" class="nav-link">← Return to Submit Page</a>
+            <a href="index.html" class="nav-link">← กลับไปหน้าหลัก</a>
         </div>
 
         <button onclick="clearData()" class="clear-btn">🗑️ เคลียร์ข้อมูล</button>
@@ -222,7 +222,7 @@
 
         function loadPlayers() {
             let players = JSON.parse(localStorage.getItem("players")) || [];
-            let tableBody = document.getElementById("playerTable");
+            let tableBody = document.getElementById("resultTable");
             tableBody.innerHTML = "";
 
             players.forEach((player, index) => {
@@ -239,7 +239,7 @@
         function calculateCost() {
             let courtCost = parseFloat(document.getElementById("ค่าคอร์ทแบด").value) || 0;
             let shuttleCost = parseFloat(document.getElementById("ค่าลูก").value) || 0;
-            let additionalCost = parseFloat(document.getElementById("ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)").value) || 0;
+            // let additionalCost = parseFloat(document.getElementById("ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)").value) || 0;
 
             let players = JSON.parse(localStorage.getItem("players")) || [];
             if (players.length === 0) {
@@ -248,19 +248,20 @@
             }
 
             let totalPlayHours = players.reduce((sum, player) => sum + player.playHours, 0);
-            let totalCost = courtCost + shuttleCost + additionalCost;
-
+            let totalCost = courtCost + shuttleCost 
+            // + additionalCost;
             let resultTable = document.getElementById("resultTable");
             resultTable.innerHTML = "";
 
             players.forEach((player,index) => {
                 let playerCost = ((player.playHours / totalPlayHours) * totalCost).toFixed(2);
+                let roundedCost = Math.ceil(playerCost);
                 resultTable.innerHTML += `
                     <tr>
                         <td>${index + 1}</td>
                         <td>${player.name}</td>
                         <td>${player.playHours} ชม.</td>
-                        <td>${playerCost}</td>
+                        <td>${roundedCost}</td>
                     </tr>
                 `;
             });
