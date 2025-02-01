@@ -143,7 +143,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>🏸 Badminton Cost Calculator</h2>
+        <h2>🏸 เครื่องมือคำนวณค่าใช้จ่ายตีแบดมินตัน</h2>
 
         <div class="input-group">
             <label for="courtCost">Court Rental Cost:</label>
@@ -160,32 +160,32 @@
             <input type="number" id="additionalCost" min="0" value="0">
         </div>
 
-        <h3>Player List</h3>
+        <h3>รายชื่อคนเล่น</h3>
         <table>
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Play Hours</th>
+                    <th>ชื่อ</th>
+                    <th>ชั่วโมงที่เล่น</th>
                 </tr>
             </thead>
             <tbody id="playerTable"></tbody>
         </table>
 
-        <button onclick="calculateCost()">Calculate Cost</button>
+        <button onclick="calculateCost()">คำนวณค่าใช้จ่าย</button>
 
-        <h3>Results</h3>
+        <h3>ผลลัพธ์</h3>
         <table>
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Play Hours</th>
-                    <th>Cost</th>
+                    <th>ชื่อ</th>
+                    <th>ชื่อโมงทีเล่น</th>
+                    <th>ค่าใช้จ่าย</th>
                 </tr>
             </thead>
             <tbody id="resultTable"></tbody>
         </table>
 
-        <button onclick="clearData()" class="clear-btn">🗑️ Clear Data</button>
+        <button onclick="clearData()" class="clear-btn">🗑️ เคลียร์ข้อมูล</button>
     </div>
 
     <script>
