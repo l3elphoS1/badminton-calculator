@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Badminton Cost Calculator</title>
     <style>
+        .date-display {
+            color: #666;
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -144,20 +151,22 @@
 <body>
     <div class="container">
         <h2>🏸 เครื่องมือคำนวณค่าใช้จ่ายตีแบดมินตัน</h2>
+        <div class="date-display" id="currentDate"></div>
 
+        
         <div class="input-group">
             <label for="ค่าคอร์ทแบด">ค่าคอร์ทแบด:</label>
-            <input type="number" id="ค่าคอร์ทแบด" min="0" value="0">
+            <input type="number" id="ค่าคอร์ทแบด" min="0" value="">
         </div>
 
         <div class="input-group">
-            <label for="ค่าลูก">ค่าลูกt:</label>
-            <input type="number" id="ค่าลูก" min="0" value="0">
+            <label for="ค่าลูก">ค่าลูก:</label>
+            <input type="number" id="ค่าลูก" min="0" value="">
         </div>
 
         <div class="input-group">
             <label for="ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)">ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง):</label>
-            <input type="number" id="ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)" min="0" value="0">
+            <input type="number" id="ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)" min="0" value="">
         </div>
 
         <h3>รายชื่อคนเล่น</h3>
@@ -165,7 +174,7 @@
             <thead>
                 <tr>
                     <th>ชื่อ</th>
-                    <th>ชั่วโมงที่เล่น</th>
+                    <th>ชม.ที่เล่น</th>
                 </tr>
             </thead>
             <tbody id="playerTable"></tbody>
@@ -193,12 +202,19 @@
     </div>
 
     <script>
+
+        function updateDate() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const date = new Date().toLocaleDateString('th-TH', options);
+            document.getElementById('currentDate').textContent = date;
+        }
+
         function clearData() {
-            let confirmClear = confirm("Are you sure you want to delete all player data?");
+            let confirmClear = confirm("ต้องการลบข้อมูลที่บันทึก?");
             if (confirmClear) {
                 localStorage.removeItem("players");
                 loadPlayers();
-                alert("All data has been cleared.");
+                alert("ล้างข้อมูลสำเร็จ");
             }
         }
 
@@ -210,8 +226,9 @@
             players.forEach(player => {
                 tableBody.innerHTML += `
                     <tr>
+                        <td>${index + 1}</td>
                         <td>${player.name}</td>
-                        <td>${player.playHours} ชั่วโมง</td>
+                        <td>${player.playHours} ชม.</td>
                     </tr>
                 `;
             });
@@ -238,8 +255,9 @@
                 let playerCost = ((player.playHours / totalPlayHours) * totalCost).toFixed(2);
                 resultTable.innerHTML += `
                     <tr>
+                        <td>${index + 1}</td>
                         <td>${player.name}</td>
-                        <td>${player.playHours} ชั่วโมง</td>
+                        <td>${player.playHours} ชม.</td>
                         <td>${playerCost}</td>
                     </tr>
                 `;
