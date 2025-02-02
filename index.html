@@ -86,34 +86,23 @@
         .payment-detail {
             margin-bottom: 0.25rem;
         }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h2, h3 {
+                font-size: 1.2rem;
+            }
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>🏸 เครื่องมือคำนวณค่าใช้จ่ายแบดมินตัน</h2>
+        <h2> เครื่องมือคำนวณค่าใช้จ่ายแบดมินตัน</h2>
 
-        <h3>📌 ป้อนข้อมูล</h3>
-        <div class="input-group">
-            <label for="courtPayer">ชื่อผู้จ่ายค่าคอร์ท:</label>
-            <input type="text" id="courtPayer">
-        </div>
-
-        <div class="input-group">
-            <label for="courtCost">ค่าคอร์ทแบด:</label>
-            <input type="number" id="courtCost" min="0">
-        </div>
-
-        <div class="input-group">
-            <label for="shuttlePayer">ชื่อผู้จ่ายค่าลูก:</label>
-            <input type="text" id="shuttlePayer">
-        </div>
-
-        <div class="input-group">
-            <label for="shuttleCost">ค่าลูก:</label>
-            <input type="number" id="shuttleCost" min="0">
-        </div>
-
-        <h3>👥 เพิ่มผู้เล่น</h3>
         <div class="input-group">
             <label for="playerName">ชื่อผู้เล่น:</label>
             <input type="text" id="playerName">
@@ -122,10 +111,17 @@
             <label for="playHours">ชม. ที่เล่น:</label>
             <input type="number" id="playHours" min="0.5" step="0.5">
         </div>
-
+        <div class="input-group">
+            <label for="courtCost">ค่าคอร์ทแบด (บาท):</label>
+            <input type="number" id="courtCost" placeholder="0">
+        </div>
+        <div class="input-group">
+            <label for="shuttleCost">ค่าลูก (บาท):</label>
+            <input type="number" id="shuttleCost" placeholder="0">
+        </div>
         <button onclick="addPlayer()">➕ เพิ่มผู้เล่น</button>
 
-        <h3>🔢 รายชื่อผู้เล่น</h3>
+        <h3> รายชื่อผู้เล่น</h3>
         <table>
             <thead>
                 <tr>
@@ -138,20 +134,22 @@
             <tbody id="playerList"></tbody>
         </table>
 
-        <button onclick="calculateCost()">📊 คำนวณค่าใช้จ่าย</button>
+        <button onclick="calculateCost()"> คำนวณค่าใช้จ่าย</button>
 
-        <h3>💰 ผลลัพธ์</h3>
+        <h3> ผลลัพธ์</h3>
         <table>
             <thead>
                 <tr>
                     <th>ชื่อผู้เล่น</th>
-                    <th>รายละเอียดการโอน</th>
+                    <th>ค่าคอร์ท</th>
+                    <th>ค่าลูก</th>
+                    <th>ยอดที่ต้องจ่าย</th>
                 </tr>
             </thead>
             <tbody id="resultTable"></tbody>
         </table>
 
-        <button onclick="clearData()">🗑️ เคลียร์ข้อมูล</button>
+        <div id="totalCost"></div> <br>  <button onclick="clearData()">️ เคลียร์ข้อมูล</button>
     </div>
 
     <script>
@@ -160,35 +158,24 @@
         function addPlayer() {
             let name = document.getElementById("playerName").value.trim();
             let playHours = parseFloat(document.getElementById("playHours").value);
+            let courtCost = parseFloat(document.getElementById("courtCost").value || 0);
+            let shuttleCost = parseFloat(document.getElementById("shuttleCost").value || 0);
 
             if (!name || isNaN(playHours) || playHours <= 0) {
-                alert("กรุณาป้อนชื่อและจำนวนชม.ที่เล่นให้ถูกต้อง!");
+                alert("กรุณาป้อนข้อมูลให้ถูกต้อง!");
                 return;
             }
 
-            players.push({ name, playHours });
+            players.push({ name, playHours, courtCost, shuttleCost });
             localStorage.setItem("players", JSON.stringify(players));
             document.getElementById("playerName").value = "";
             document.getElementById("playHours").value = "";
+            document.getElementById("courtCost").value = "";
+            document.getElementById("shuttleCost").value = "";
             updatePlayerList();
         }
 
         function calculateCost() {
-            let courtCost = parseFloat(document.getElementById("courtCost").value) || 0;
-            let shuttleCost = parseFloat(document.getElementById("shuttleCost").value) || 0;
-            let courtPayer = document.getElementById("courtPayer").value.trim();
-            let shuttlePayer = document.getElementById("shuttlePayer").value.trim();
-
-            if (!courtPayer || !shuttlePayer || courtCost === 0 || shuttleCost === 0) {
-                alert("กรุณากรอกข้อมูลผู้จ่ายและค่าใช้จ่ายให้ครบถ้วน!");
-                return;
-            }
-
-            if (players.length === 0) {
-                alert("กรุณาเพิ่มผู้เล่นก่อนคำนวณค่าใช้จ่าย!");
-                return;
-            }
-
             let totalPlayHours = players.reduce((sum, player) => sum + player.playHours, 0);
             if (totalPlayHours === 0) {
                 alert("กรุณาใส่จำนวนชั่วโมงเล่นก่อนคำนวณ!");
@@ -197,49 +184,33 @@
 
             let resultTable = document.getElementById("resultTable");
             resultTable.innerHTML = "";
-            
-            let combinedPayer = courtPayer === shuttlePayer;
 
-            // Calculate individual shares
+            let totalCourtCost = players.reduce((sum, player) => sum + player.courtCost, 0);
+            let totalShuttleCost = players.reduce((sum, player) => sum + player.shuttleCost, 0);
+
+            // Calculate cost per hour
+            let courtCostPerHour = totalCourtCost / totalPlayHours;
+            let shuttleCostPerHour = totalShuttleCost / totalPlayHours;
+
+            document.getElementById("totalCost").innerHTML = `รวมค่าคอร์ท: ${totalCourtCost} บาท, รวมค่าลูก: ${totalShuttleCost} บาท`;
+
             players.forEach(player => {
-                if (player.name !== courtPayer || player.name !== shuttlePayer) {
-                    let playerShare = player.playHours / totalPlayHours;
-                    let courtShare = Math.ceil(playerShare * courtCost);
-                    let shuttleShare = Math.ceil(playerShare * shuttleCost);
-                    
-                    let row = document.createElement('tr');
-                    let paymentDetails = [];
+                let row = document.createElement('tr');
 
-                    // Only add court payment if player is not the court payer
-                    if (combinedPayer) {
-                    let totalShare = courtShare + shuttleShare;
-                    if (totalShare > 0) {
-                        paymentDetails.push(`โอนให้ ${courtPayer} (ค่าคอร์ทและค่าลูก): ${totalShare} บาท`);
-                    }
-                    } else {
-                    if (player.name !== courtPayer && courtShare > 0) {
-                        paymentDetails.push(`โอนให้ ${courtPayer} (ค่าคอร์ท): ${courtShare} บาท`);
-                    }
+                let courtCostDisplay = player.courtCost > 0 ? `${player.courtCost} `: `<span class="transparent">0 </span>`;
+                let shuttleCostDisplay = player.shuttleCost > 0 ? `${player.shuttleCost} ` : `<span class="transparent">0</span>`;
 
-                    // Only add shuttle payment if player is not the shuttle payer
-                    if (player.name !== shuttlePayer && shuttleShare > 0) {
-                        paymentDetails.push(`โอนให้ ${shuttlePayer} (ค่าลูก): ${shuttleShare} บาท`);
-                    }
-                }
+                // Calculate individual costs based on hours played
+                let individualCourtCost = Math.ceil(player.playHours * courtCostPerHour);
+                let individualShuttleCost = Math.ceil(player.playHours * shuttleCostPerHour);
+                let totalToPay = individualCourtCost + individualShuttleCost;
 
-                    // Display results only if there are payments to be made
-                    if (paymentDetails.length > 0) {
-                        row.innerHTML = `
-                            <td>${player.name}</td>
-                            <td>
-                                ${paymentDetails.map(detail => 
-                                    `<div class="payment-detail">${detail}</div>`
-                                ).join('')}
-                            </td>
-                        `;
-                        resultTable.appendChild(row);
-                    }
-                }
+                row.innerHTML = `
+                    <td>${player.name}</td>
+                    <td>${courtCostDisplay}</td>
+                    <td>${shuttleCostDisplay}</td>
+                    <td>${totalToPay} บาท</td>  `;
+                resultTable.appendChild(row);
             });
         }
 
@@ -253,7 +224,7 @@
                         <td>${index + 1}</td>
                         <td>${player.name}</td>
                         <td>${player.playHours} ชม.</td>
-                        <td><button onclick="removePlayer(${index})">🗑️</button></td>
+                        <td><button onclick="removePlayer(${index})">️</button></td>
                     </tr>
                 `;
             });
@@ -271,10 +242,7 @@
                 localStorage.removeItem("players");
                 updatePlayerList();
                 document.getElementById("resultTable").innerHTML = "";
-                document.getElementById("courtPayer").value = "";
-                document.getElementById("courtCost").value = "";
-                document.getElementById("shuttlePayer").value = "";
-                document.getElementById("shuttleCost").value = "";
+                document.getElementById("totalCost").innerHTML = "";
             }
         }
 
@@ -286,5 +254,6 @@
             }
         };
     </script>
+
 </body>
 </html>
