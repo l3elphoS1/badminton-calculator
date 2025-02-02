@@ -1,46 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <meta property="og:title" content="เว็บคำนวณค่าตีแบด" />
-    <meta property="og:description" content="ระบุชื่อ และจำนวนที่ตี จากนั้นใส่ค่าคอร์ทและลูกในหน้าผลลัพธ์" />
-    <meta property="og:image" content="https://i.kym-cdn.com/photos/images/newsfeed/002/606/605/843.png" />
-    <meta property="og:url" content="https://badminton-calculator.netlify.app/" />
-    <meta property="og:type" content="website" />
-
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Playtime - Badminton Calculator</title>
+    <title>Badminton Cost Calculator</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            background-color: #f5f5f5;
-            padding: 1rem;
+            background: linear-gradient(to bottom, #ffb1eb, #ddb7ac);
+            padding: 1rem; 
             min-height: 100vh;
         }
 
@@ -53,13 +27,10 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        h2 {
+        h2, h3 {
+            text-align: center;
             color: #333;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            margin-bottom: 1rem;
         }
 
         .input-group {
@@ -69,165 +40,251 @@
         label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #555;
-            font-weight: 500;
+            font-weight: bold;
         }
 
         input {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.5rem;
             border: 1px solid #ddd;
-            border-radius: 6px;
+            border-radius: 5px;
             font-size: 1rem;
-            transition: border-color 0.2s;
-            margin-bottom: 1rem;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
         }
 
         button {
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem;
             border-radius: 6px;
             cursor: pointer;
             font-size: 1rem;
             width: 100%;
             margin: 1rem 0;
-            transition: background-color 0.2s;
         }
 
         button:hover {
             background-color: #45a049;
         }
 
-        p {
-            color: #666;
-            margin: 1rem 0;
-            line-height: 1.5;
-        }
-
-        a {
-            color: #4CAF50;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        a:hover {
-            color: #45a049;
-            text-decoration: underline;
-        }
-
-        .success-message {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            padding: 0.75rem;
-            border-radius: 6px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
-        .link-message {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            padding: 0.75rem;
-            background-color: #f5f5f5;
-            border-radius: 6px;
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            text-align: left;
         }
 
-        @media (max-width: 480px) {
-            .container {
-                padding: 1rem;
-            }
+        th {
+            background-color: #f4f4f4;
+        }
 
-            h2 {
-                font-size: 1.25rem;
-            }
-
-            input {
-                padding: 0.5rem;
-            }
-
-            button {
-                padding: 0.5rem 1rem;
-            }
+        .payment-detail {
+            margin-bottom: 0.25rem;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>🏸 ลงเวลาเล่น</h2>
+        <h2>🏸 เครื่องมือคำนวณค่าใช้จ่ายแบดมินตัน</h2>
+
+        <h3>📌 ป้อนข้อมูล</h3>
+        <div class="input-group">
+            <label for="courtPayer">ชื่อผู้จ่ายค่าคอร์ท:</label>
+            <input type="text" id="courtPayer">
+        </div>
 
         <div class="input-group">
-            <label for="playerName">ชื่อ:</label>
-            <input type="text" id="playerName" placeholder="Enter your name" autocomplete="name">
+            <label for="courtCost">ค่าคอร์ทแบด:</label>
+            <input type="number" id="courtCost" min="0">
         </div>
 
         <div class="input-group">
-            <label for="playHours">ชั่วโมงที่เล่น:</label>
-            <input type="number" id="playHours" min="0.5" step="0.5" value="1">
+            <label for="shuttlePayer">ชื่อผู้จ่ายค่าลูก:</label>
+            <input type="text" id="shuttlePayer">
         </div>
 
-        <button onclick="submitPlayer()">ส่งข้อมูล</button>
-
-        <div class="success-message">
-            ✅ ข้อมูลที่กรอกจะถูกบันทึกลงใน หน้าผลลัพธ์
+        <div class="input-group">
+            <label for="shuttleCost">ค่าลูก:</label>
+            <input type="number" id="shuttleCost" min="0">
         </div>
 
-        <div class="link-message">
-            🔗 <a href="results.html">ดูค่าใช้จ่าย</a>
+        <h3>👥 เพิ่มผู้เล่น</h3>
+        <div class="input-group">
+            <label for="playerName">ชื่อผู้เล่น:</label>
+            <input type="text" id="playerName">
         </div>
+        <div class="input-group">
+            <label for="playHours">ชม. ที่เล่น:</label>
+            <input type="number" id="playHours" min="0.5" step="0.5">
+        </div>
+
+        <button onclick="addPlayer()">➕ เพิ่มผู้เล่น</button>
+
+        <h3>🔢 รายชื่อผู้เล่น</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>ชื่อ</th>
+                    <th>ชม. ที่เล่น</th>
+                    <th>ลบ</th>
+                </tr>
+            </thead>
+            <tbody id="playerList"></tbody>
+        </table>
+
+        <button onclick="calculateCost()">📊 คำนวณค่าใช้จ่าย</button>
+
+        <h3>💰 ผลลัพธ์</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ชื่อผู้เล่น</th>
+                    <th>รายละเอียดการโอน</th>
+                </tr>
+            </thead>
+            <tbody id="resultTable"></tbody>
+        </table>
+
+        <button onclick="clearData()">🗑️ เคลียร์ข้อมูล</button>
     </div>
 
     <script>
-        function submitPlayer() {
+        let players = [];
+
+        function addPlayer() {
             let name = document.getElementById("playerName").value.trim();
             let playHours = parseFloat(document.getElementById("playHours").value);
 
-            if (name === "") {
-                alert("Please enter your name.");
-                document.getElementById("playerName").focus();
+            if (!name || isNaN(playHours) || playHours <= 0) {
+                alert("กรุณาป้อนชื่อและจำนวนชม.ที่เล่นให้ถูกต้อง!");
                 return;
             }
 
-            if (isNaN(playHours) || playHours < 0.5) {
-                alert("Please enter valid play hours (minimum 0.5 hours).");
-                document.getElementById("playHours").focus();
-                return;
-            }
-
-            // Retrieve existing players from localStorage
-            let players = JSON.parse(localStorage.getItem("players")) || [];
-
-            // Check for duplicate names
-            const existingPlayer = players.find(player => player.name.toLowerCase() === name.toLowerCase());
-            if (existingPlayer) {
-                if (!confirm("A player with this name already exists. Do you want to update their hours?")) {
-                    return;
-                }
-                existingPlayer.playHours = playHours;
-            } else {
-                // Add new player
-                players.push({ name, playHours });
-            }
-
-            // Save back to localStorage
+            players.push({ name, playHours });
             localStorage.setItem("players", JSON.stringify(players));
-
-            alert("✅ Submitted successfully!");
             document.getElementById("playerName").value = "";
-            document.getElementById("playHours").value = "1";
+            document.getElementById("playHours").value = "";
+            updatePlayerList();
         }
+
+        function calculateCost() {
+            let courtCost = parseFloat(document.getElementById("courtCost").value) || 0;
+            let shuttleCost = parseFloat(document.getElementById("shuttleCost").value) || 0;
+            let courtPayer = document.getElementById("courtPayer").value.trim();
+            let shuttlePayer = document.getElementById("shuttlePayer").value.trim();
+
+            if (!courtPayer || !shuttlePayer || courtCost === 0 || shuttleCost === 0) {
+                alert("กรุณากรอกข้อมูลผู้จ่ายและค่าใช้จ่ายให้ครบถ้วน!");
+                return;
+            }
+
+            if (players.length === 0) {
+                alert("กรุณาเพิ่มผู้เล่นก่อนคำนวณค่าใช้จ่าย!");
+                return;
+            }
+
+            let totalPlayHours = players.reduce((sum, player) => sum + player.playHours, 0);
+            if (totalPlayHours === 0) {
+                alert("กรุณาใส่จำนวนชั่วโมงเล่นก่อนคำนวณ!");
+                return;
+            }
+
+            let resultTable = document.getElementById("resultTable");
+            resultTable.innerHTML = "";
+            
+            let combinedPayer = courtPayer === shuttlePayer;
+
+            // Calculate individual shares
+            players.forEach(player => {
+                if (player.name !== courtPayer || player.name !== shuttlePayer) {
+                    let playerShare = player.playHours / totalPlayHours;
+                    let courtShare = Math.ceil(playerShare * courtCost);
+                    let shuttleShare = Math.ceil(playerShare * shuttleCost);
+                    
+                    let row = document.createElement('tr');
+                    let paymentDetails = [];
+
+                    // Only add court payment if player is not the court payer
+                    if (combinedPayer) {
+                    let totalShare = courtShare + shuttleShare;
+                    if (totalShare > 0) {
+                        paymentDetails.push(`โอนให้ ${courtPayer} (ค่าคอร์ทและค่าลูก): ${totalShare} บาท`);
+                    }
+                    } else {
+                    if (player.name !== courtPayer && courtShare > 0) {
+                        paymentDetails.push(`โอนให้ ${courtPayer} (ค่าคอร์ท): ${courtShare} บาท`);
+                    }
+
+                    // Only add shuttle payment if player is not the shuttle payer
+                    if (player.name !== shuttlePayer && shuttleShare > 0) {
+                        paymentDetails.push(`โอนให้ ${shuttlePayer} (ค่าลูก): ${shuttleShare} บาท`);
+                    }
+                }
+
+                    // Display results only if there are payments to be made
+                    if (paymentDetails.length > 0) {
+                        row.innerHTML = `
+                            <td>${player.name}</td>
+                            <td>
+                                ${paymentDetails.map(detail => 
+                                    `<div class="payment-detail">${detail}</div>`
+                                ).join('')}
+                            </td>
+                        `;
+                        resultTable.appendChild(row);
+                    }
+                }
+            });
+        }
+
+        function updatePlayerList() {
+            let playerList = document.getElementById("playerList");
+            playerList.innerHTML = "";
+
+            players.forEach((player, index) => {
+                playerList.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${player.name}</td>
+                        <td>${player.playHours} ชม.</td>
+                        <td><button onclick="removePlayer(${index})">🗑️</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function removePlayer(index) {
+            players.splice(index, 1);
+            localStorage.setItem("players", JSON.stringify(players));
+            updatePlayerList();
+        }
+
+        function clearData() {
+            if (confirm("ต้องการล้างข้อมูลทั้งหมดหรือไม่?")) {
+                players = [];
+                localStorage.removeItem("players");
+                updatePlayerList();
+                document.getElementById("resultTable").innerHTML = "";
+                document.getElementById("courtPayer").value = "";
+                document.getElementById("courtCost").value = "";
+                document.getElementById("shuttlePayer").value = "";
+                document.getElementById("shuttleCost").value = "";
+            }
+        }
+
+        window.onload = function() {
+            let storedPlayers = localStorage.getItem("players");
+            if (storedPlayers) {
+                players = JSON.parse(storedPlayers);
+                updatePlayerList();
+            }
+        };
     </script>
 </body>
 </html>

@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Badminton Cost Calculator</title>
     <style>
+        .total-costs {
+            background: #f8f9fa;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+        
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .negative-balance {
+            color: #dc3545;
+        }
+        
+        .positive-balance {
+            color: #198754;
+        }
+        
+        .paid-cost {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
         .date-display {
             color: #666;
             margin-top: -1rem;
@@ -20,8 +46,8 @@
         }
 
         body {
-            background-color: #f5f5f5;
-            padding: 1rem;
+            background: linear-gradient(to bottom, #ffb1eb, #ddb7ac); */
+            padding: 1rem; 
             min-height: 100vh;
         }
 
@@ -143,6 +169,8 @@
             }
         }
 
+
+
         /* #resultTable td:last-child::before {
             content: 'B';
         } */
@@ -164,22 +192,6 @@
             <input type="number" id="ค่าลูก" min="0" value="">
         </div>
 
-        <!-- <div class="input-group">
-            <label for="ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)">ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง):</label>
-            <input type="number" id="ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)" min="0" value="">
-        </div> -->
-
-        <!-- <h3>รายชื่อคนเล่น</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>ลำดับ</th>
-                    <th>ชื่อ</th>
-                    <th>ชม.ที่เล่น</th>
-                </tr>
-            </thead>
-            <tbody id="playerTable"></tbody>
-        </table> -->
 
         <button onclick="calculateCost()">คำนวณค่าใช้จ่าย</button>
 
@@ -189,12 +201,16 @@
                 <tr>
                     <th>ลำดับ</th>
                     <th>ชื่อ</th>
+                    <th>ค่าลูก</th>
+                    <th>ค่าคอร์ท</th>
                     <th>ชม.ทีเล่น</th>
                     <th>ค่าใช้จ่าย</th>
+
                 </tr>
             </thead>
             <tbody id="resultTable"></tbody>
         </table>
+
 
         <div class="navigation">
             <a href="index.html" class="nav-link">← กลับไปหน้าหลัก</a>
@@ -220,54 +236,152 @@
             }
         }
 
-        function loadPlayers() {
-            let players = JSON.parse(localStorage.getItem("players")) || [];
-            let tableBody = document.getElementById("resultTable");
-            tableBody.innerHTML = "";
-
-            players.forEach((player, index) => {
-            tableBody.innerHTML += `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${player.name}</td>
-                <td>${player.playHours} ชม.</td>
-            </tr>
-                `;
-            });
+        
+        function updateTotalCosts() {
+            const players = JSON.parse(localStorage.getItem("players")) || [];
+            const totalCourtCost = players.reduce((sum, player) => sum + (Number(player.courtCost) || 0), 0);
+            const totalShuttleCost = players.reduce((sum, player) => sum + (Number(player.shuttleCost) || 0), 0);
+            
+            document.getElementById("totalCourtCost").textContent = `${totalCourtCost} บาท`;
+            document.getElementById("totalShuttleCost").textContent = `${totalShuttleCost} บาท`;
         }
 
         function calculateCost() {
-            let courtCost = parseFloat(document.getElementById("ค่าคอร์ทแบด").value) || 0;
-            let shuttleCost = parseFloat(document.getElementById("ค่าลูก").value) || 0;
-            // let additionalCost = parseFloat(document.getElementById("ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)").value) || 0;
+    let players = JSON.parse(localStorage.getItem("players")) || [];
+    let resultTable = document.getElementById("resultTable");
+    
+    // Find who paid for court and shuttle
+    let courtPayers = players.filter(p => p.courtCost > 0);
+    let shuttlePayers = players.filter(p => p.shuttleCost > 0);
+    
+    // Get total costs
+    let totalCourtCost = courtPayers.reduce((sum, p) => sum + (p.courtCost || 0), 0);
+    let totalShuttleCost = shuttlePayers.reduce((sum, p) => sum + (p.shuttleCost || 0), 0);
+    
+    // Calculate total hours
+    let totalHours = players.reduce((sum, p) => sum + p.playHours, 0);
+    
+    // Update total displays
+    document.getElementById("totalCourtCost").textContent = `${totalCourtCost} บาท`;
+    document.getElementById("totalShuttleCost").textContent = `${totalShuttleCost} บาท`;
 
+    resultTable.innerHTML = "";
+    
+    players.forEach((player, index) => {
+        // Calculate how much this player should pay based on their hours
+        let shouldPayCourt = totalCourtCost * (player.playHours / totalHours);
+        let shouldPayShuttle = totalShuttleCost * (player.playHours / totalHours);
+        
+        // Calculate their balance
+        let balance = 0;
+        
+        // If they paid for court/shuttle, they should receive money
+        if (player.courtCost > 0) {
+            balance -= player.courtCost;  // They paid this much
+            balance += shouldPayCourt;    // But only owe their share
+        } else {
+            balance += shouldPayCourt;    // They owe their share
+        }
+        
+        if (player.shuttleCost > 0) {
+            balance -= player.shuttleCost; // They paid this much
+            balance += shouldPayShuttle;   // But only owe their share
+        } else {
+            balance += shouldPayShuttle;   // They owe their share
+        }
+        
+        // Round the balance
+        balance = Math.round(balance);
+        
+        // Determine balance class
+        const balanceClass = balance !== 0 ? (balance < 0 ? 'negative-balance' : 'positive-balance') : '';
+        
+        resultTable.innerHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${player.name}</td>
+                <td class="${player.shuttleCost > 0 ? 'paid-cost' : ''}">${player.shuttleCost || 0} บาท</td>
+                <td class="${player.courtCost > 0 ? 'paid-cost' : ''}">${player.courtCost || 0} บาท</td>
+                <td>${player.playHours} ชม.</td>
+                <td class="${balanceClass}">${balance} บาท</td>
+            </tr>
+        `;
+    });
+}
+
+
+        function togglePayment(playerIndex, type) {
             let players = JSON.parse(localStorage.getItem("players")) || [];
-            if (players.length === 0) {
-                alert("No players added!");
-                return;
+            if (type === 'court') {
+                players[playerIndex].hasPaidCourt = !players[playerIndex].hasPaidCourt;
+            } else {
+                players[playerIndex].hasPaidShuttle = !players[playerIndex].hasPaidShuttle;
             }
-
-            let totalPlayHours = players.reduce((sum, player) => sum + player.playHours, 0);
-            let totalCost = courtCost + shuttleCost 
-            // + additionalCost;
-            let resultTable = document.getElementById("resultTable");
-            resultTable.innerHTML = "";
-
-            players.forEach((player,index) => {
-                let playerCost = ((player.playHours / totalPlayHours) * totalCost).toFixed(2);
-                let roundedCost = Math.ceil(playerCost);
-                resultTable.innerHTML += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${player.name}</td>
-                        <td>${player.playHours} ชม.</td>
-                        <td>${roundedCost}</td>
-                    </tr>
-                `;
-            });
+            localStorage.setItem("players", JSON.stringify(players));
+            calculateCost();
         }
 
-        window.onload = loadPlayers;
-    </script>
+        window.onload = function() {
+            updateDate();
+            calculateCost();
+        };
+
+        // Keep your existing updateDate() and clearData() functions
+
+
+    //     function loadPlayers() {
+    //         let players = JSON.parse(localStorage.getItem("players")) || [];
+    //         let tableBody = document.getElementById("resultTable");
+    //         tableBody.innerHTML = "";
+
+    //         players.forEach((player, index) => {
+    //         tableBody.innerHTML += `
+    //         <tr>
+    //             <td>${index + 1}</td>
+    //             <td>${player.name}</td>
+    //             <td>${player.playHours} ชม.</td>
+    //             <td>${player.shuttleCost} ชม.</td>
+    //             <td>${player.courtCost} ชม.</td>
+    //         </tr>
+    //             `;
+    //         });
+    //     }
+
+    //     function calculateCost() {
+    //         let courtCost = parseFloat(document.getElementById("ค่าคอร์ทแบด").value) || 0;
+    //         let shuttleCost = parseFloat(document.getElementById("ค่าลูก").value) || 0;
+    //         // let additionalCost = parseFloat(document.getElementById("ค่าใช้จ่ายเพิ่มเติม(ไม่มีปล่อยว่าง)").value) || 0;
+
+    //         let players = JSON.parse(localStorage.getItem("players")) || [];
+    //         if (players.length === 0) {
+    //             alert("No players added!");
+    //             return;
+    //         }
+
+    //         let totalPlayHours = players.reduce((sum, player) => sum + player.playHours, 0);
+    //         let totalCost = courtCost + shuttleCost 
+    //         // + additionalCost;
+    //         let resultTable = document.getElementById("resultTable");
+    //         resultTable.innerHTML = "";
+
+    //         players.forEach((player,index) => {
+    //             let playerCost = ((player.playHours / totalPlayHours) * totalCost).toFixed(2);
+    //             let roundedCost = Math.ceil(playerCost);
+    //             resultTable.innerHTML += `
+    //                 <tr>
+    //                     <td>${index + 1}</td>
+    //                     <td>${player.name}</td>
+                        
+    //                     <td>${player.shuttleCost} ชม.</td>
+    //                     <td>${player.courtCost} ชม.</td>
+    //                     <td>${player.playHours} ชม.</td>
+    //                     <td>${roundedCost}</td>
+    //                 </tr>   
+    //             `;
+    //         });
+    //     }
+
+    //     window.onload = loadPlayers;
+    // </script>
 </body>
 </html>
