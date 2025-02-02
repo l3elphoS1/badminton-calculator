@@ -29,6 +29,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Badminton Cost Calculator</title>
     <style>
+        
         * {
             margin: 0;
             padding: 0;
@@ -143,37 +144,37 @@
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            min-width: 500px; /* Ensures table doesn't get too squeezed */
-        }
+            border-collapse: collapse;        }
 
         th, td {
             padding: 0.5rem;
             text-align: left;
             font-size: 0.9rem;
             border-bottom: 1px solid #eee;
+            white-space: normal; /* Allow text wrapping */
+            vertical-align: middle;
         }
 
         th {
             background-color: #f4f4f4;
             font-weight: bold;
-            white-space: nowrap;
+        
         }
 
         .narrow-column {
-            width: 50px;
+            width: 30px;
         }
 
         .hours-column {
-            width: 80px;
+            width: 40px;
         }
 
         .amount-column {
-            width: 100px;
+            width: 60px;
         }
 
         .delete-column {
-            width: 40px;
+            width: 30px;
         }
 
         .negative-amount {
@@ -216,21 +217,63 @@
                 font-size: 1.1rem;
             }
 
-            .results-table {
-                margin: 0 -0.8rem;
-                width: calc(100% + 1.6rem);
-                border-radius: 0;
-            }
-
             th, td {
                 padding: 0.4rem;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
 
-            .hours-btn {
-                width: 32px;
-                height: 32px;
+            .narrow-column {
+                width: 20px;
             }
+
+            .hours-column {
+                width: 30px;
+            }
+
+            .amount-column {
+                width: 45px;
+            }
+
+            .delete-column {
+                width: 25px;
+            }
+
+            .delete-btn {
+                width: 24px;
+                height: 24px;
+                font-size: 0.7rem;
+            }
+
+            /* Adjust text alignment for better mobile display */
+            td:nth-child(1), 
+            td:nth-child(3) {
+                text-align: center;
+            }
+
+            td:nth-child(4),
+            td:nth-child(5),
+            td:nth-child(6) {
+                text-align: right;
+            }
+
+            .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            color: #666;
+            font-size: 0.8rem;
+            border-top: 1px solid #eee;
+        }
+
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
         }
     </style>
 </head>
@@ -268,6 +311,22 @@
             <table>
                 <thead>
                     <tr>
+                        <th class="narrow-column mobile-hide-header">#</th>
+                        <th>ชื่อ</th>
+                        <th class="hours-column mobile-hide-header">ชม.</th>
+                        <th class="amount-column mobile-hide-header">คอร์ท</th>
+                        <th class="amount-column mobile-hide-header">ลูก</th>
+                        <th class="amount-column mobile-hide-header">รวม</th>
+                        <th class="delete-column"></th>
+                    </tr>
+                </thead>
+                <tbody id="resultTable"></tbody>
+            </table>
+        </div>
+        <!-- <div class="results-table">
+            <table>
+                <thead>
+                    <tr>
                         <th class="narrow-column">#</th>
                         <th>ชื่อ</th>
                         <th class="hours-column">ชม.</th>
@@ -279,10 +338,15 @@
                 </thead>
                 <tbody id="resultTable"></tbody>
             </table>
-        </div>
+        </div> -->
 
         <div class="total-cost" id="totalCost"></div>
         <button onclick="clearData()">🗑️ เคลียร์ข้อมูล</button>
+
+        <div class="footer">
+                Created by Attapong-K with ❤️ and AI assistance<br>
+                © 2024 All rights reserved
+            </div>
     </div>
 
     <script>
